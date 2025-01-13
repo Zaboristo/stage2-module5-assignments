@@ -3,6 +3,7 @@ package assignments;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 import assignments.annotations.FullNameProcessorGeneratorAnnotation;
@@ -15,11 +16,12 @@ import lombok.Setter;
 @Setter
 public class LocalProcessor {
     private String processorName;
-    private static Long period = 10_000_000_000_000L;
-    protected String processorVersion;
+    private static long period = 10_000_000_000_000L;
+    private String processorVersion;
     private Integer valueOfCheap;
-    Scanner informationScanner;
-    static LinkedList<String> stringArrayList = new LinkedList<>();
+    private Scanner informationScanner;
+    private StringBuilder builder;
+    private static List<String> stringArrayList = new LinkedList<>();
 
     public LocalProcessor(String processorName, Long period, String processorVersion, Integer valueOfCheap,
                           Scanner informationScanner, LinkedList<String> stringArrayList) {
@@ -44,20 +46,24 @@ public class LocalProcessor {
 
     @FullNameProcessorGeneratorAnnotation
     public String fullNameProcessorGenerator(LinkedList<String> stringList) {
-        StringBuilder finalName = new StringBuilder();
+        builder = new StringBuilder();
         for(String a : stringArrayList) {
-            finalName.append(a).append(' ');
+            builder.append(a).append(' ');
         }
-        return finalName.toString();
+        return builder.toString();
     }
 
     @ReadFullProcessorNameAnnotation
     public void readFullProcessorName(File file) throws FileNotFoundException {
-            informationScanner = new Scanner(file);
-            StringBuilder proc = new StringBuilder();
-            while (informationScanner.hasNext()) {
-                proc.append(informationScanner.nextLine());
+            try {
+                informationScanner = new Scanner(file);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            processorVersion = proc.toString();
+            builder = new StringBuilder();
+            while (informationScanner.hasNext()) {
+                builder.append(informationScanner.nextLine());
+            }
+            processorVersion = builder.toString();
     }
 }
